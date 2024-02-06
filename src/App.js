@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Board } from "./components/Board";
 import { ResetButton } from "./components/ResetButton";
@@ -23,6 +23,17 @@ const App = () => {
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 })
   const [gameOver, setGameOver] = useState(false);
 
+
+   useEffect(()=>{
+    // {dor settting the board}
+      //   const boradData=localStorage.getItem("data");
+      //   console.log(JSON.parse(boradData));
+      // setBoard(JSON.parse(boradData));
+      const boradData=localStorage.getItem("scoreData");
+      setScores(JSON.parse(boradData))
+      console.log(JSON.parse(boradData));
+   },[])
+
   const handleBoxClick = (boxIdx) => {
     // Step 1: Update the board
     const updatedBoard = board.map((value, idx) => {
@@ -34,6 +45,8 @@ const App = () => {
     })
 
     setBoard(updatedBoard);
+    // console.log(updatedBoard)
+    localStorage.setItem("data",JSON.stringify(updatedBoard));
 
     // Step 2: Check if either player has won the game
     const winner = checkWinner(updatedBoard);
@@ -43,16 +56,25 @@ const App = () => {
         let { oScore } = scores;
         oScore += 1;
         setScores({ ...scores, oScore })
+        console.log(scores);
+       
       } else {
         let { xScore } = scores;
         xScore += 1;
         setScores({ ...scores, xScore })
+       
+        
       }
+      console.log(scores)
+     
     }
-
+    console.log(scores)
+    localStorage.setItem("scoreData",JSON.stringify(scores))
     // Step 3: Change active player
     setXPlaying(!xPlaying);
   }
+   console.log(scores)
+   //localStorage.setItem("scoreData",JSON.stringify(scores))
 
   const checkWinner = (board) => {
     for (let i = 0; i < WIN_CONDITIONS.length; i++) {
@@ -69,13 +91,21 @@ const App = () => {
   const resetBoard = () => {
     setGameOver(false);
     setBoard(Array(9).fill(null));
+    // localStorage.setItem("scoreData",JSON.stringify({ xScore: 0, oScore: 0 }))
+  }
+  const resetScore = () => {
+    // setGameOver(false);
+    // setBoard(Array(9).fill(null));
+     localStorage.setItem("scoreData",JSON.stringify({ xScore: 0, oScore: 0 }))
+     
   }
 
   return (
     <div className="App">
       <ScoreBoard scores={scores} xPlaying={xPlaying} />
       <Board board={board} onClick={gameOver ? resetBoard : handleBoxClick} />
-      <ResetButton resetBoard={resetBoard} />
+      <ResetButton resetBoard={resetBoard} value="Reset"/>
+      <a href="/"><ResetButton resetBoard={resetScore} value="Reset Score" /></a>
     </div>
   );
 }
