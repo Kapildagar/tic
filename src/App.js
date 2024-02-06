@@ -23,6 +23,7 @@ const App = () => {
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 })
   const [gameOver, setGameOver] = useState(false);
 
+  localStorage.setItem("scoreData",JSON.stringify({ xScore: 0, oScore: 0 }))
 
    useEffect(()=>{
     // {dor settting the board}
